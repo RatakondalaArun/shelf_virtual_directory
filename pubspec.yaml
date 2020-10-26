@@ -1,0 +1,16 @@
+name: shelf_virtual_directory
+description: Virtual Directory for shelf .
+version: 1.0.0
+author: Ratakondala Arun<arunratakondala3470@gmail.com>
+homepage: https://github.com/RatakondalaArun/shelf_virtual_directory.git
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  shelf: ^0.7.9
+  shelf_router: ^0.7.2
+  mime: ^0.9.7
+
+dev_dependencies:
+  test: ^1.14.2
