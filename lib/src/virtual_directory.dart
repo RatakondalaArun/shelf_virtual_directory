@@ -14,8 +14,63 @@ class ShelfVirtualDirectory {
   final Router _router;
   final Directory _rootDir;
 
+  Cascade _cascade;
+
+  /// Creates a instance of [Handler]
+  Handler get handler => _cascade.handler;
+
+  /// Returns a instance of [Router]
+  ///
+  /// Can be used to mount as a subroute
+  ///
+  /// ```
+  /// final router = Router('/',ShelfVirtualDirectory('web').router);// localhost:8080/
+  /// //or
+  /// final router = Router('/home/',ShelfVirtualDirectory('web').router);//localhost:8080/home/
+  /// ```
   Router get router => _router;
 
+  /// Returns a instance of [Cascade]
+  ///
+  /// Can be used to directly serve from server
+  /// ```
+  /// import 'package:shelf/shelf_io.dart' as io show serve;
+  ///
+  /// final cascade = ShelfVirtualDirectory('web').cascade;
+  /// io.serve(cascade,'localhost',8080).then((server){
+  ///   print('Server is sunning at ${server.address}:${server.port}'),
+  /// })
+  ///
+  /// ```
+  Cascade get cascade => _cascade;
+
+  /// Creates a instance of [ShelfVirtualDirectory]
+  ///
+  /// ## Parameters
+  /// - `folderPath`: Name of the directory you want to serve from the *current folder*
+  ///
+  /// - `defaultFile`: File name that will be served. *Default: index.html*
+  ///
+  /// - `default404File`: File name that will be served for 404. *Default: 404.html*
+  ///
+  /// - `showLogs`: Shows logs from the ShelfVirtualDirectory. *Default: true*
+  ///
+  /// ## Examples
+  ///
+  /// You can get router or handler or cascade from [ShelfVirtualDirectory]
+  /// instance
+  /// ```dart
+  ///
+  /// final virDirRouter = ShelfVirtualDirectory(folderToServe);
+  ///
+  /// final staticFileHandler = const Pipeline()
+  ///     .addMiddleware(logRequests())
+  ///     .addHandler(virDirRouter.handler);
+  ///
+  /// io.serve(Cascade().add(staticFileHandler).handler,address,port).then((server){
+  ///     print('Server is sunning at ${server.address}:${server.port}'),
+  /// });
+  ///```
   ShelfVirtualDirectory(
     this.folderPath, {
     this.defaultFile = 'index.html',
@@ -23,6 +78,8 @@ class ShelfVirtualDirectory {
     this.showLogs = true,
   })  : _rootDir = Directory(Platform.script.resolve(folderPath).toFilePath()),
         _router = Router() {
+    _cascade = Cascade().add(
+        (req) async => await _router.handler(req) ?? await _serve404Page());
     _initilizeRoutes();
   }
 
@@ -81,10 +138,23 @@ class ShelfVirtualDirectory {
       // if "404.html" does not exist
       _router.all('/<.*>', (_) => Response.notFound(':/ No default 404 page'));
     }
-    _router.all('/<.*>', (_) => _serveFile(Uri.file(filePath)));
+    _router.all(
+        '/<.*>', (_) => _serveFile(Uri.file(filePath), statusCode: 400));
   }
 
-  Future<Response> _serveFile(Uri fileUri) async {
+  // serves 404 page to static handlers
+  Future<Response> _serve404Page() async {
+    final filePath = '${_rootDir.path}/${default404File ?? '404.html'}';
+    final headers = await _getFileHeaders(File(filePath));
+    if (headers.isEmpty) {
+      // if "404.html" does not exist
+      return Response.notFound(':/ No default 404 page');
+    }
+    return _serveFile(Uri.file(filePath), statusCode: 400);
+  }
+
+  // serves file
+  Future<Response> _serveFile(Uri fileUri, {int statusCode = 200}) async {
     final file = File.fromUri(fileUri);
     try {
       if (!await file.exists()) {
@@ -92,7 +162,7 @@ class ShelfVirtualDirectory {
         return Response.notFound('NotFound');
       }
       return Response(
-        200,
+        statusCode,
         body: file.openRead(),
         headers: await _getFileHeaders(file),
       );
@@ -102,6 +172,7 @@ class ShelfVirtualDirectory {
     }
   }
 
+  // returns fileheaders
   Future<Map<String, Object>> _getFileHeaders(File file) async {
     if (!await file.exists()) {
       return {};
@@ -112,6 +183,7 @@ class ShelfVirtualDirectory {
     };
   }
 
+  // prints logs
   void _logToConsole(String message) {
     if (showLogs) print('[ShelfVirtualDirectory] $message');
   }
