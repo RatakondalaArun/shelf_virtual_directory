@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:shelf/shelf.dart' show Cascade, Pipeline, logRequests, Response;
+import 'package:shelf/shelf.dart' show Cascade, Pipeline, logRequests;
 import 'package:shelf/shelf_io.dart' as io show serve;
 
 import 'package:shelf_virtual_directory/shelf_virtual_directory.dart'
