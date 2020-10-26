@@ -1,8 +1,16 @@
 name: shelf_virtual_directory
-description: Virtual Directory for shelf .
+
 version: 1.0.0
+
+description: >-
+  This package provides a virtual directory 
+  to serve static files from a directory.
+
+issue_tracker: https://github.com/RatakondalaArun/shelf_virtual_directory/issues
+
 # author: Ratakondala Arun<arunratakondala3470@gmail.com>
-homepage: https://github.com/RatakondalaArun/shelf_virtual_directory.git
+
+repository: https://github.com/RatakondalaArun/shelf_virtual_directory.git
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
