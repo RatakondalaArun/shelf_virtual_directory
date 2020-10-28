@@ -1,5 +1,7 @@
 # shelf_virtual_directory
 
+![Pub Version](https://img.shields.io/pub/v/shelf_virtual_directory)
+
 This package provides `Handler`, `Router` and `Cascade` to serve static files from the [*dart shelf server*](https://pub.dev/packages/shelf) and can work with websockets.
 
 | Provider  | UseCase                                                           |
