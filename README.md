@@ -100,7 +100,7 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     
 
 ## How it works?
----
+
 It adds all the files under the given root directory as a route to a `Router` instance.
 
 
@@ -126,6 +126,6 @@ GET     /style/index.css
 
 
 ## Contrubitions
----
+
 **All contrubitions are welcomed.**
 
