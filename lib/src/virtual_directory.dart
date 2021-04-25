@@ -78,8 +78,8 @@ class ShelfVirtualDirectory {
     this.showLogs = true,
   })  : _rootDir = Directory(Platform.script.resolve(folderPath).toFilePath()),
         _router = Router() {
-    _cascade = Cascade().add(
-        (req) async => await _router.handler(req) ?? await _serve404Page());
+    _cascade = Cascade()
+        .add((req) async => await _router.call(req) ?? await _serve404Page());
     _initilizeRoutes();
   }
 
