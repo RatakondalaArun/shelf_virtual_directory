@@ -1,9 +1,9 @@
 name: shelf_virtual_directory
 
-version: 1.0.0+1
+version: 1.0.1
 
 description: >-
-  This package provides a virtual directory 
+  This package provides a virtual directory
   to serve static files from a shelf server.
 
 issue_tracker: https://github.com/RatakondalaArun/shelf_virtual_directory/issues
@@ -16,10 +16,10 @@ environment:
   sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
-  shelf: ^0.7.9
-  shelf_router: ^0.7.2
-  mime: ^0.9.7
+  mime: ^1.0.0
+  shelf: ^1.1.1
+  shelf_router: ^1.0.0
 
 dev_dependencies:
-  test: ^1.14.2
-  pedantic: ^1.9.0
+  pedantic: ^1.11.0
+  test: ^1.17.1

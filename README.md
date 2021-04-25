@@ -10,9 +10,7 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
 | `Router`  | Can be used to mount as a subroute                                |
 | `Cascade` | Can be used directly serve from shelf server                      |
 
-
 ## Setup
-
 
 1) Add to pubspec.yaml file
 
@@ -20,16 +18,19 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     dependencies:
         shelf_virtual_directory: latest_version
     ```
+
 2) Get dependencies
-   
+
     ```shell
     pub get
     ```
+
 3) Import
 
    ```dart
    import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
-   ``` 
+   ```
+
 4) Create a instance of `ShelfVirtualDirectory` with a directory `../web`
 
    ```dart
@@ -40,6 +41,7 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
         showLogs:true,
     );
    ```
+
    **Note: `index.html` and `404.html` files must be directly under root folder. In above case under `web/` folder.**
 
 ## Handling different cases
@@ -77,9 +79,11 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     ..get('/otherroute',otherRouteHandler)
     ..get('/',ShelfVirtualDirectory('../web').handler)//at end
     ```
+
     **Note: If your are planning to use it under home directory('/'), always mount or handle the `ShelfVirtualDirectory` at the end.**
 
     Example
+
     ```dart
     final mainRoute = Router()
     ..get('/rest',(_)=>Respond.ok('Other routes'))
@@ -87,6 +91,7 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     ```
 
 - Using as a `Cascade`
+
     ```dart
     import 'package:shelf/shelf_io.dart' as io show serve;
 
@@ -97,15 +102,14 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
       print('Server is sunning at ${server.address}:${server.port}'),
     })
     ```
-    
 
 ## How it works?
 
 It adds all the files under the given root directory as a route to a `Router` instance.
 
-
 Example
-```
+
+```text
 web/
     - index.html
     - 404.html
@@ -114,18 +118,18 @@ web/
     - style/
         - index.css
 ```
+
 All this will turn in to.
 
-```
+```text
 GET     /index.html
 GET     /404.html
 GET     /js/index.js
 GET     /style/index.css
 ```
- If user try to access other routes it will serve `404.html`.
 
+ If user try to access other routes it will serve `404.html`.
 
 ## Contrubitions
 
 **All contrubitions are welcomed.**
-
