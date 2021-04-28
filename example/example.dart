@@ -1,15 +1,16 @@
 import 'dart:io';
 
-import 'package:shelf/shelf.dart' show Cascade, Pipeline, logRequests;
+import 'package:shelf/shelf.dart' show Cascade, Pipeline, Response, logRequests;
 import 'package:shelf/shelf_io.dart' as io show serve;
+import 'package:shelf_router/shelf_router.dart';
 
 import 'package:shelf_virtual_directory/shelf_virtual_directory.dart'
     show ShelfVirtualDirectory;
 
-void main(List<String> args) {
+Future<void> main(List<String> args) async {
   // serving directory
   const folderToServe = 'web';
-  final address = InternetAddress.anyIPv4;
+  final address = InternetAddress.loopbackIPv4;
   final port = int.parse(Platform.environment['PORT'] ?? '8082');
 
   // creates a [ShelfVirtualDirectory] instance and provides a [Router] instance.
@@ -21,15 +22,16 @@ void main(List<String> args) {
       .addMiddleware(logRequests())
       .addHandler(virDirRouter.handler);
 
+  final apiRouter = Router()
+    ..get('/api/users', (req) => Response.ok('users'))
+    ..get('/api/test', (req) => Response.ok('test'));
+
   // add the handler to [Cascade]
-  io
-      .serve(
-        Cascade().add(staticFileHandler).handler,
-        address,
-        port,
-      )
-      .then(
-        (server) =>
-            print('Server is sunning at ${server.address}:${server.port}'),
-      );
+  final server = await io.serve(
+    Cascade().add(staticFileHandler).add(apiRouter).handler,
+    address,
+    port,
+  );
+
+  print('Server is running at http://${server.address.host}:${server.port}');
 }
