@@ -1,6 +1,6 @@
 name: shelf_virtual_directory
 
-version: 1.0.1
+version: 2.0.0-nullsafety.0
 
 description: >-
   This package provides a virtual directory
@@ -13,7 +13,7 @@ issue_tracker: https://github.com/RatakondalaArun/shelf_virtual_directory/issues
 repository: https://github.com/RatakondalaArun/shelf_virtual_directory.git
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   mime: ^1.0.0
