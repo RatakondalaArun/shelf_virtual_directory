@@ -11,10 +11,10 @@ class ShelfVirtualDirectory {
   final String defaultFile;
   final String default404File;
   final bool showLogs;
-  final Router _router;
-  final Directory _rootDir;
 
-  Cascade _cascade;
+  late Router _router;
+  late Directory _rootDir;
+  late Cascade _cascade;
 
   /// Creates a instance of [Handler]
   Handler get handler => _cascade.handler;
@@ -76,10 +76,10 @@ class ShelfVirtualDirectory {
     this.defaultFile = 'index.html',
     this.default404File = '404.html',
     this.showLogs = true,
-  })  : _rootDir = Directory(Platform.script.resolve(folderPath).toFilePath()),
-        _router = Router() {
-    _cascade = Cascade()
-        .add((req) async => await _router.call(req) ?? await _serve404Page());
+  }) {
+    _rootDir = Directory(Platform.script.resolve(folderPath).toFilePath());
+    _router = Router();
+    _cascade = Cascade().add((req) => _router.call(req));
     _initilizeRoutes();
   }
 
@@ -92,8 +92,7 @@ class ShelfVirtualDirectory {
       );
     }
     // collects all the files from the
-    final rootDirSubFolders =
-        await _rootDir.list(recursive: true, followLinks: true).toList();
+    final rootDirSubFolders = await _rootDir.list(recursive: true).toList();
     final rootFolderName = ([..._rootDir.uri.pathSegments]..removeLast()).last;
 
     for (var entity in rootDirSubFolders) {
@@ -106,7 +105,7 @@ class ShelfVirtualDirectory {
             .sublist(entity.uri.pathSegments.indexOf(rootFolderName) + 1)
             .join('/');
         _logToConsole(
-            '✅Found FilePath: /$rootFolderName/$fileRoute | FileName: $fileName | Content-Type: ${mime.lookupMimeType(filePath.path)}');
+            '✅ Found FilePath: /$rootFolderName/$fileRoute | FileName: $fileName | Content-Type: ${mime.lookupMimeType(filePath.path)}');
         // adds file to all the routes
         _router.get('/$fileRoute', (_) => _serveFile(filePath));
       }
@@ -119,7 +118,7 @@ class ShelfVirtualDirectory {
   }
 
   Future<void> _setUpIndexPage() async {
-    final filePath = '${_rootDir.path}/${defaultFile ?? 'index.html'}';
+    final filePath = '${_rootDir.path}/$defaultFile';
     final headers = await _getFileHeaders(File(filePath));
     if (headers.isEmpty) {
       // if "index.html" does not exist
@@ -132,7 +131,7 @@ class ShelfVirtualDirectory {
   }
 
   Future<void> _setUp404Page() async {
-    final filePath = '${_rootDir.path}/${default404File ?? '404.html'}';
+    final filePath = '${_rootDir.path}/$default404File';
     final headers = await _getFileHeaders(File(filePath));
     if (headers.isEmpty) {
       // if "404.html" does not exist
@@ -143,15 +142,15 @@ class ShelfVirtualDirectory {
   }
 
   // serves 404 page to static handlers
-  Future<Response> _serve404Page() async {
-    final filePath = '${_rootDir.path}/${default404File ?? '404.html'}';
-    final headers = await _getFileHeaders(File(filePath));
-    if (headers.isEmpty) {
-      // if "404.html" does not exist
-      return Response.notFound(':/ No default 404 page');
-    }
-    return _serveFile(Uri.file(filePath), statusCode: 400);
-  }
+  // Future<Response> _serve404Page() async {
+  //   final filePath = '${_rootDir.path}/$default404File';
+  //   final headers = await _getFileHeaders(File(filePath));
+  //   if (headers.isEmpty) {
+  //     // if "404.html" does not exist
+  //     return Response.notFound(':/ No default 404 page');
+  //   }
+  //   return _serveFile(Uri.file(filePath), statusCode: 400);
+  // }
 
   // serves file
   Future<Response> _serveFile(Uri fileUri, {int statusCode = 200}) async {
@@ -178,7 +177,7 @@ class ShelfVirtualDirectory {
       return {};
     }
     return {
-      HttpHeaders.contentTypeHeader: mime.lookupMimeType(file.path),
+      HttpHeaders.contentTypeHeader: mime.lookupMimeType(file.path) ?? '',
       HttpHeaders.contentLengthHeader: (await file.length()).toString(),
     };
   }
