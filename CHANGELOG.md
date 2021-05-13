@@ -1,5 +1,9 @@
 # Change Log
 
+## 2.0.0
+
+- nullsafety to stable
+
 ## 2.0.0-nullsafety.0
 
 - Removed test dependency.
