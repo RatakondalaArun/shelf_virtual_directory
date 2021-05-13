@@ -1,0 +1,41 @@
+name: CD
+
+on:
+  release:
+
+jobs:
+  publish:
+    name: 📦 Publish package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - name: 🔧 Setup Dart SDK
+        uses: dart-lang/setup-dart@v1.0
+
+      - name: ⏬ Get Depdendencies
+        run: dart pub get
+
+      - name: 🧬 Analyze
+        run: dart analyze
+
+      - name: ⚙ Setup Pub Creditionals
+        shell: bash
+        env:
+          PUB_DEV_PUBLISH_ACCESS_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN }}
+          PUB_DEV_PUBLISH_REFRESH_TOKEN: ${{ secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN }}
+          PUB_DEV_PUBLISH_TOKEN_ENDPOINT: ${{ secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT }}
+          PUB_DEV_PUBLISH_EXPIRATION: ${{ secrets.PUB_DEV_PUBLISH_EXPIRATION }}
+        run: |
+          cat <<EOF > ~/.pub-cache/credentials.json
+          {
+            "accessToken":"${PUB_DEV_PUBLISH_ACCESS_TOKEN}",
+            "refreshToken":"${PUB_DEV_PUBLISH_REFRESH_TOKEN}",
+            "tokenEndpoint":"${PUB_DEV_PUBLISH_TOKEN_ENDPOINT}",
+            "scopes":["https://www.googleapis.com/auth/userinfo.email","openid"],
+            "expiration":${PUB_DEV_PUBLISH_EXPIRATION}
+          }
+          EOF
+
+      - name: 🚀 Publish
+        run: dart pub publish -n && dart pub publish -f
