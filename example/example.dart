@@ -1,11 +1,10 @@
 import 'dart:io';
 
-import 'package:shelf/shelf.dart' show Cascade, Pipeline, Response, logRequests;
+import 'package:shelf/shelf.dart' show Pipeline, Response, logRequests;
 import 'package:shelf/shelf_io.dart' as io show serve;
 import 'package:shelf_router/shelf_router.dart';
 
-import 'package:shelf_virtual_directory/shelf_virtual_directory.dart'
-    show ShelfVirtualDirectory;
+import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
 
 Future<void> main(List<String> args) async {
   // serving directory
@@ -18,17 +17,25 @@ Future<void> main(List<String> args) async {
 
   // using [Pipeline] from shelf we can add a logging middleware.
   // we can use handler provided by [Router] instance.
-  final staticFileHandler = const Pipeline()
+  final pipline = const Pipeline()
       .addMiddleware(logRequests())
-      .addHandler(virDirRouter.handler);
+      .addHandler(ShelfVirtualDirectory('web').handler);
 
   final apiRouter = Router()
-    ..get('/api/users', (req) => Response.ok('users'))
-    ..get('/api/test', (req) => Response.ok('test'));
+    ..mount('/routerstatic/', virDirRouter.router)
+    ..mount('/mountstatic/', virDirRouter.handler)
+    // servers root dir https://github.com/RatakondalaArun/shelf_virtual_directory/issues/15
+    // tests permissions
+    ..mount('/fsrootstatic/', ShelfVirtualDirectory('/').handler)
+    ..mount('/piplinestatic/', pipline)
+    ..get('/getstatic/', virDirRouter.handler)
+    ..get('/api/user', (_) => Response.ok('/api/user'))
+    ..get('/api', (_) => Response.ok('/api'));
 
   // add the handler to [Cascade]
   final server = await io.serve(
-    Cascade().add(staticFileHandler).add(apiRouter).handler,
+    apiRouter,
+    // virDirRouter.cascade.add(apiRouter).handler,
     address,
     port,
   );
