@@ -12,8 +12,9 @@ environment:
 
 dependencies:
   mime: ^1.0.0
-  shelf: ^1.1.1
-  shelf_router: ^1.0.0
+  path: ^1.8.0
+  shelf: ^1.1.4
+  shelf_router: ^1.1.0
 
 dev_dependencies:
-  pedantic: ^1.11.0
+  lints: ^1.0.1
