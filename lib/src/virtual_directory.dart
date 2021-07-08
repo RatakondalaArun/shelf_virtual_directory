@@ -11,36 +11,115 @@ import 'package:shelf_router/shelf_router.dart';
 
 part 'html_templates.dart';
 
+/// Creates a instance of [ShelfVirtualDirectory]
+///
+/// ## Parameters
+/// - `folderPath`: Name of the directory you want to serve from the *current folder*
+///
+/// - `defaultFile`: File name that will be served. *Default: index.html*
+///
+/// - `default404File`: File name that will be served for 404. *Default: 404.html*
+///
+/// - `showLogs`: Shows logs from the ShelfVirtualDirectory. *Default: true*
+///
+/// ## Examples
+///
+/// You can get router or handler or cascade from [ShelfVirtualDirectory]
+/// instance
+/// ```dart
+///
+/// final virDirRouter = ShelfVirtualDirectory(folderToServe);
+///
+/// final staticFileHandler = const Pipeline()
+///     .addMiddleware(logRequests())
+///     .addHandler(virDirRouter.handler);
+///
+/// io.serve(Cascade().add(staticFileHandler).handler,address,port).then((server){
+///     print('Server is sunning at ${server.address}:${server.port}'),
+/// });
+///```
 class ShelfVirtualDirectory {
   final String folderPath;
   final String defaultFile;
   final String default404File;
-  final FileHeaderPraser _headersParser;
+  final FileHeaderParser _headersParser;
   final Directory _dir;
   final bool listDirectory;
 
+  /// Creates a instance of [ShelfVirtualDirectory]
+  ///
+  /// ## Parameters
+  ///
+  /// - `folderPath`: Name of the directory you want to serve from the *current folder*
+  /// - `defaultFile`: File name that will be served. *Default: index.html*
+  /// - `default404File`: File name that will be served for 404. *Default: 404.html*
+  /// - `listDirectory`: Lists files and directories from the [folderPath]
+  /// - `headersParser`: Provide your own headers from the [File].
+  ///
+  /// ## Examples
+  ///
+  /// You can get router or handler or cascade from [ShelfVirtualDirectory]
+  /// instance
+  /// ```dart
+  ///
+  /// final virDirRouter = ShelfVirtualDirectory(folderToServe);
+  ///
+  /// final staticFileHandler = const Pipeline()
+  ///     .addMiddleware(logRequests())
+  ///     .addHandler(virDirRouter.handler);
+  ///
+  /// io.serve(Cascade().add(staticFileHandler).handler,address,port).then((server){
+  ///     print('Server is sunning at ${server.address}:${server.port}'),
+  /// });
+  ///```
   ShelfVirtualDirectory(
     this.folderPath, {
     this.defaultFile = 'index.html',
     this.default404File = '404.html',
     this.listDirectory = true,
-    FileHeaderPraser headersPraser = _defaultFileheaderPraser,
+    FileHeaderParser headersParser = _defaultFileheaderPraser,
   })  : _dir = Directory(path.fromUri(Platform.script.resolve(folderPath))),
-        _headersParser = headersPraser {
+        _headersParser = headersParser {
     if (!_dir.existsSync()) {
       throw ArgumentError('A directory corresponding to folderpath '
           '"$folderPath" could not be found');
     }
   }
 
+  /// Creates a instance of [Handler]
   Handler get handler => _handler;
+
+  /// Returns a instance of [Router]
+  ///
+  /// Can be used to mount as a subroute
+  ///
+  /// ```
+  /// final router = Router('/',ShelfVirtualDirectory('web').router);// localhost:8080/
+  /// //or
+  /// final router = Router('/home/',ShelfVirtualDirectory('web').router);//localhost:8080/home/
+  /// ```
   Router get router => Router(notFoundHandler: _handler);
+
+  /// Returns a instance of [Cascade]
+  ///
+  /// Can be used to directly serve from server
+  /// ```
+  /// import 'package:shelf/shelf_io.dart' as io show serve;
+  ///
+  /// final cascade = ShelfVirtualDirectory('web').cascade;
+  /// io.serve(cascade,'localhost',8080).then((server){
+  ///   print('Server is sunning at ${server.address}:${server.port}'),
+  /// })
+  ///
+  /// ```
   Cascade get cascade => Cascade().add(_handler);
 
   Future<Response> _handler(Request req) async {
     if (req.method != 'GET') return Response.notFound('Not Found');
 
     final basePath = await _dir.resolveSymbolicLinks();
+
+    // file system path for this entity
     final fsPath = path.joinAll([basePath, ...req.url.pathSegments]);
 
     // checks if index file should be served
@@ -94,7 +173,7 @@ class ShelfVirtualDirectory {
   Future<Response> _handleFile(
     String fsPath,
     File? file,
-    FileHeaderPraser headerPraser,
+    FileHeaderParser headerPraser,
   ) async {
     // serves default404file incase requested file does not exist
     if (file == null) {
@@ -110,7 +189,7 @@ class ShelfVirtualDirectory {
     // collect file data
     final fileStat = await file.stat();
 
-    // check file permission
+    // check file permission of
     if (fileStat.modeString()[0] != 'r') return Response.forbidden('Forbidden');
 
     return Response(
@@ -125,18 +204,12 @@ class ShelfVirtualDirectory {
     String requestedPath,
     String fsPath,
     Directory dir,
-    FileHeaderPraser headerPraser,
+    FileHeaderParser headerPraser,
   ) async {
     if (!listDirectory) return Response.notFound('Not Found');
     if (!requestedPath.endsWith('/') && requestedPath.isNotEmpty) {
       return Response.movedPermanently('${req.requestedUri.toString()}/');
     }
-
-    final dirStat = await dir.stat();
-    print(dirStat.modeString());
-
-    // check for directory permission
-    // if (dirStat.modeString()[0] != 'r') return Response.forbidden('Forbidden');
 
     final controller = StreamController<List<int>>();
     const encoding = Utf8Codec();
@@ -165,6 +238,7 @@ class ShelfVirtualDirectory {
 
     try {
       final subEntities = await dir.list().toList();
+      // sort entities
       subEntities.sort((e1, e2) {
         if (e1 is Directory && e2 is! Directory) {
           return -1;
@@ -178,8 +252,9 @@ class ShelfVirtualDirectory {
       for (var subEntity in subEntities) {
         final entityStat = await subEntity.stat();
         final entityName = Uri.file(subEntity.path).pathSegments.last;
-        add(tr(entityName, requestedPath, entityStat));
+        add(_tr(entityName, requestedPath, entityStat));
       }
+
       add(_tableEnd());
       add('<p>total: ${subEntities.length}</p>');
       add(_listDirHtmlEnd());
@@ -200,8 +275,8 @@ class ShelfVirtualDirectory {
   }
 }
 
-// Prase header and return headers for the file
-typedef FileHeaderPraser = FutureOr<Map<String, Object>?> Function(File file);
+// Parse header and return headers for the file
+typedef FileHeaderParser = FutureOr<Map<String, Object>?> Function(File file);
 
 Future<Map<String, Object>> _defaultFileheaderPraser(File file) async {
   final fileType = mime.lookupMimeType(file.path);
@@ -219,7 +294,8 @@ Future<Map<String, Object>> _defaultFileheaderPraser(File file) async {
   };
 }
 
-String tr(String name, String requestedPath, FileStat stat) {
+/// Table row
+String _tr(String name, String requestedPath, FileStat stat) {
   final isDir = stat.type == FileSystemEntityType.directory;
   final modified = stat.modified.toLocal();
   return '''
