@@ -125,9 +125,6 @@ class ShelfVirtualDirectory {
     // checks if index file should be served
     final fsPathType = await FileSystemEntity.type(fsPath);
 
-    print(
-        'fsPath: $fsPath, reqpath: ${req.url.path} listDir: $listDirectory, fsPathType: $fsPathType');
-
     // if (fsPathType == FileSystemEntityType.notFound) {
     //   final indexFile = File(path.join(basePath, defaultFile));
     //   if (!await indexFile.exists()) return Response.notFound('Not Found');
@@ -145,7 +142,6 @@ class ShelfVirtualDirectory {
       }
       return _handleDir(
         req,
-        req.url.path,
         basePath,
         Directory(fsPath),
         _headersParser,
@@ -158,19 +154,19 @@ class ShelfVirtualDirectory {
       case FileSystemEntityType.directory:
         return _handleDir(
           req,
-          req.url.path,
           basePath,
           Directory(fsPath),
           _headersParser,
         );
       case FileSystemEntityType.file:
-        return _handleFile(basePath, File(fsPath), _headersParser);
+        return _handleFile(req, basePath, File(fsPath), _headersParser);
       default:
-        return _handleFile(basePath, null, _headersParser);
+        return _handleFile(req, basePath, null, _headersParser);
     }
   }
 
   Future<Response> _handleFile(
+    Request req,
     String fsPath,
     File? file,
     FileHeaderParser headerPraser,
@@ -201,11 +197,11 @@ class ShelfVirtualDirectory {
 
   Future<Response> _handleDir(
     Request req,
-    String requestedPath,
     String fsPath,
     Directory dir,
     FileHeaderParser headerPraser,
   ) async {
+    final requestedPath = req.url.path;
     if (!listDirectory) return Response.notFound('Not Found');
     if (!requestedPath.endsWith('/') && requestedPath.isNotEmpty) {
       return Response.movedPermanently('${req.requestedUri.toString()}/');
