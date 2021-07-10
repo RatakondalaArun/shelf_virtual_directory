@@ -17,15 +17,9 @@ void main() {
   final fsPath = p.join(Directory.current.path, 'test', 'web');
 
   // final vWebDir = ShelfVirtualDirectory('fsPath');
-  test(
-    'Throws "ArgumentError" when directory is not found',
-    () {
-      expect(
-        () => ShelfVirtualDirectory('doesnotexist'),
-        throwsArgumentError,
-      );
-    },
-  );
+  test('Throws "ArgumentError" when directory is not found', () {
+    expect(() => ShelfVirtualDirectory('doesnotexist'), throwsArgumentError);
+  });
 
   group('Test API calls', () {
     late io.IOServer server;
