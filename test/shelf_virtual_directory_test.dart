@@ -65,93 +65,99 @@ void main() {
         );
 
     // GET Requests
-    test('GET ..mount(\'/routerstatic/\') should return 200', () async {
-      final res = await http.get(url('/routerstatic/'));
-      expect(res.statusCode, equals(200));
-    });
+    group('GET Requests', () {
+      test('GET ..mount(\'/routerstatic/\') should return 200', () async {
+        final res = await http.get(url('/routerstatic/'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('GET ..mount(\'/mountstatic/\') should return 200', () async {
-      final res = await http.get(url('/mountstatic/'));
-      expect(res.statusCode, equals(200));
-    });
+      test('GET ..mount(\'/mountstatic/\') should return 200', () async {
+        final res = await http.get(url('/mountstatic/'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('GET ..mount(\'/fsrootstatic/\') should return 200', () async {
-      final res = await http.get(url('/fsrootstatic/'));
-      expect(res.statusCode, equals(200));
-      // CI services might not have access to root folder so skipping it
-    }, skip: true);
+      test('GET ..mount(\'/fsrootstatic/\') should return 200', () async {
+        final res = await http.get(url('/fsrootstatic/'));
+        expect(res.statusCode, equals(200));
+        // CI services might not have access to root folder so skipping it
+      }, skip: true);
 
-    test('GET ..get(\'/api/user\') should return 200', () async {
-      final res = await http.get(url('/api/user'));
-      expect(res.statusCode, equals(200));
-    });
+      test('GET ..get(\'/api/user\') should return 200', () async {
+        final res = await http.get(url('/api/user'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('GET Should redirect if there is no trailing slash "/"', () async {
-      final req = http.Request('GET', url('/routerstatic/temp'))
-        // ..maxRedirects = 1
-        ..followRedirects = false;
-      final client = http.Client();
+      test('GET Should redirect if there is no trailing slash "/"', () async {
+        final req = http.Request('GET', url('/routerstatic/temp'))
+          // ..maxRedirects = 1
+          ..followRedirects = false;
+        final client = http.Client();
 
-      final rs = await client.send(req);
-      client.close();
-      expect(rs.isRedirect, isTrue);
-      expect(rs.statusCode, equals(301));
-      expect(rs.headers[HttpHeaders.locationHeader], isNotNull);
-      expect(rs.headers[HttpHeaders.locationHeader], endsWith('/'));
+        final rs = await client.send(req);
+        client.close();
+        expect(rs.isRedirect, isTrue);
+        expect(rs.statusCode, equals(301));
+        expect(rs.headers[HttpHeaders.locationHeader], isNotNull);
+        expect(rs.headers[HttpHeaders.locationHeader], endsWith('/'));
+      });
     });
 
     // HEAD requests
-    test('HEAD ..mount(\'/routerstatic/\') should return 200', () async {
-      final res = await http.head(url('/routerstatic/'));
-      expect(res.statusCode, equals(200));
-    });
+    group('HEAD Requests', () {
+      test('HEAD ..mount(\'/routerstatic/\') should return 200', () async {
+        final res = await http.head(url('/routerstatic/'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('HRAD ..mount(\'/mountstatic/\') should return 200', () async {
-      final res = await http.head(url('/mountstatic/'));
-      expect(res.statusCode, equals(200));
-    });
+      test('HRAD ..mount(\'/mountstatic/\') should return 200', () async {
+        final res = await http.head(url('/mountstatic/'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('HEAD ..mount(\'/fsrootstatic/\') should return 200', () async {
-      final res = await http.head(url('/fsrootstatic/'));
-      expect(res.statusCode, equals(200));
-      // CI services might not have access to root folder so skipping it
-    }, skip: true);
+      test('HEAD ..mount(\'/fsrootstatic/\') should return 200', () async {
+        final res = await http.head(url('/fsrootstatic/'));
+        expect(res.statusCode, equals(200));
+        // CI services might not have access to root folder so skipping it
+      }, skip: true);
 
-    test('HEAD ..get(\'/api/user\') should return 200', () async {
-      final res = await http.head(url('/api/user'));
-      expect(res.statusCode, equals(200));
-    });
+      test('HEAD ..get(\'/api/user\') should return 200', () async {
+        final res = await http.head(url('/api/user'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('HEAD Should redirect if there is no trailing slash "/"', () async {
-      final req = http.Request('HEAD', url('/routerstatic/temp'))
-        // ..maxRedirects = 1
-        ..followRedirects = false;
-      final client = http.Client();
+      test('HEAD Should redirect if there is no trailing slash "/"', () async {
+        final req = http.Request('HEAD', url('/routerstatic/temp'))
+          // ..maxRedirects = 1
+          ..followRedirects = false;
+        final client = http.Client();
 
-      final rs = await client.send(req);
-      client.close();
-      expect(rs.isRedirect, isTrue);
-      expect(rs.statusCode, equals(301));
-      expect(rs.headers[HttpHeaders.locationHeader], isNotNull);
-      expect(rs.headers[HttpHeaders.locationHeader], endsWith('/'));
+        final rs = await client.send(req);
+        client.close();
+        expect(rs.isRedirect, isTrue);
+        expect(rs.statusCode, equals(301));
+        expect(rs.headers[HttpHeaders.locationHeader], isNotNull);
+        expect(rs.headers[HttpHeaders.locationHeader], endsWith('/'));
+      });
     });
     // - listdirectory
-    test('Should list directory', () async {
-      final res = await http.get(url('/routerstatic/temp/'));
-      expect(res.statusCode, equals(200));
-    });
+    group('Argument', () {
+      test('Should list directory', () async {
+        final res = await http.get(url('/routerstatic/temp/'));
+        expect(res.statusCode, equals(200));
+      });
 
-    test('Should not list directory', () async {
-      final res = await http.get(url('/nodirlisting/temp/'));
-      expect(res.statusCode, equals(404));
-    });
+      test('Should not list directory', () async {
+        final res = await http.get(url('/nodirlisting/temp/'));
+        expect(res.statusCode, equals(404));
+      });
 
-    test('FileHeaderParser', () async {
-      final res = await http.get(url('/customheader/'));
-      expect(
-        res.headers,
-        containsPair('customheader', 'ShelfVirtualDirectory'),
-      );
+      test('Should contains header in response FileHeaderParser', () async {
+        final res = await http.get(url('/customheader/'));
+        expect(
+          res.headers,
+          containsPair('customheader', 'ShelfVirtualDirectory'),
+        );
+      });
     });
   });
 }
