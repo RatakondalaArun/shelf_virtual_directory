@@ -40,7 +40,7 @@ void main() {
                 .handler)
         ..get('/api/user', (_) => Response.ok('/api/user'))
         ..get('/api', (_) => Response.ok('/api'))
-        ..mount('/', ShelfVirtualDirectory('/').handler);
+        ..mount('/', ShelfVirtualDirectory(fsPath).handler);
 
       // setup server test files
       final pipline = const Pipeline()
@@ -59,9 +59,6 @@ void main() {
           host: server.url.host,
           port: server.url.port,
           path: path,
-          query: server.url.query,
-          queryParameters: server.url.queryParameters,
-          fragment: server.url.fragment,
         );
 
     // GET Requests
@@ -139,7 +136,21 @@ void main() {
         expect(rs.headers[HttpHeaders.locationHeader], endsWith('/'));
       });
     });
-    // - listdirectory
+    // Range requests
+    group('Range Requests', () {
+      // returns partial content
+      test('Should response with partial content', () async {
+        final res = await http.get(
+          url('/temp/BigBuckBunnyTrailer.mp4'),
+          headers: {'Range': 'bytes=1933312-2031615'},
+        );
+        print(res.request!.url.toString());
+        expect(res.statusCode, equals(206));
+        expect(res.headers[HttpHeaders.contentLengthHeader], equals('98304'));
+        expect(res.headers[HttpHeaders.acceptRangesHeader], equals('bytes'));
+        expect(res.headers[HttpHeaders.contentRangeHeader], isNotEmpty);
+      });
+    });
     group('Argument', () {
       test('Should list directory', () async {
         final res = await http.get(url('/routerstatic/temp/'));
