@@ -78,7 +78,7 @@ class ShelfVirtualDirectory {
     this.default404File = '404.html',
     this.listDirectory = true,
     FileHeaderParser headersParser = _defaultFileheaderPraser,
-  })  : _dir = Directory(path.fromUri(Platform.script.resolve(folderPath))),
+  })  : _dir = Directory(folderPath),
         _headersParser = headersParser {
     if (!_dir.existsSync()) {
       throw ArgumentError('A directory corresponding to folderpath '
