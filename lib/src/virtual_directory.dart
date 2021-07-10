@@ -8,6 +8,7 @@ import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:http_parser/http_parser.dart' as hp;
 
 part 'html_templates.dart';
 
@@ -115,7 +116,6 @@ class ShelfVirtualDirectory {
   Cascade get cascade => Cascade().add(_handler);
 
   Future<Response> _handler(Request req) async {
-    // todo: support head request
     if (!['GET', 'HEAD'].contains(req.method)) {
       return Response.notFound('Not Found');
     }
@@ -178,7 +178,6 @@ class ShelfVirtualDirectory {
     File? file,
     FileHeaderParser headerPraser,
   ) async {
-    // todo: support range requests
     // serves default404file incase requested file does not exist
     if (file == null) {
       final notFoundFile = File(path.join(fsPath, default404File));
@@ -195,11 +194,62 @@ class ShelfVirtualDirectory {
 
     // check file permission of
     if (fileStat.modeString()[0] != 'r') return Response.forbidden('Forbidden');
+    final length = fileStat.size;
+    final range = req.headers[HttpHeaders.rangeHeader];
+    final headers = await headerPraser(file) ?? {};
+
+    if (range != null) {
+      final matches = RegExp(r'^bytes=(\d*)\-(\d*)$').firstMatch(range);
+      if (matches != null) {
+        final startMatch = matches[1] ?? '';
+        final endMatch = matches[2] ?? '';
+        if (startMatch.isNotEmpty || endMatch.isNotEmpty) {
+          int start;
+          int end;
+          if (startMatch.isEmpty) {
+            start = length - int.parse(endMatch);
+            if (start < 0) start = 0;
+            end = length - 1;
+          } else {
+            start = int.parse(startMatch);
+            end = endMatch.isEmpty ? length - 1 : int.parse(endMatch);
+          }
+          // If the range is syntactically invalid the Range header
+          // MUST be ignored (RFC 2616 section 14.35.1).
+          if (start <= end) {
+            if (end >= length) {
+              end = length - 1;
+            }
+            if (start >= length) {
+              return Response(
+                HttpStatus.requestedRangeNotSatisfiable,
+                // headers: headers,
+              );
+            }
+
+            // Override Content-Length with the actual bytes sent.
+            headers[HttpHeaders.contentLengthHeader] =
+                (end - start + 1).toString();
+
+            // Set 'Partial Content' status code.
+            headers[HttpHeaders.contentRangeHeader] =
+                'bytes $start-$end/$length';
+            // Pipe the 'range' of the file.
+
+            return Response(
+              HttpStatus.partialContent,
+              body: req.method == 'HEAD' ? null : file.openRead(start, end + 1),
+              headers: headers,
+            );
+          }
+        }
+      }
+    }
 
     return Response(
       200,
       body: req.method == 'HEAD' ? null : file.openRead(),
-      headers: await headerPraser(file),
+      headers: headers,
     );
   }
 
@@ -294,7 +344,8 @@ Future<Map<String, Object>> _defaultFileheaderPraser(File file) async {
   return {
     HttpHeaders.contentTypeHeader: fileType ?? 'application/octet-stream',
     HttpHeaders.contentLengthHeader: fileStat.size.toString(),
-    HttpHeaders.lastModifiedHeader: fileStat.modified.toString(),
+    HttpHeaders.lastModifiedHeader: hp.formatHttpDate(fileStat.modified),
+    HttpHeaders.acceptRangesHeader: 'bytes'
   };
 }
 
@@ -311,3 +362,75 @@ String _tr(String name, String requestedPath, FileStat stat) {
   </tr>
 ''';
 }
+
+// class RangeParser {
+//   final String range;
+
+//   final int _length;
+//   final int? _start;
+//   final int? _end;
+
+//   int? get start => _start;
+//   int? get end => _end;
+
+//   String get contentLength => (_end - _start + 1).toString();
+
+//   String get contentRange => 'bytes $_start-$_end/$_length';
+
+//   RangeParser._(
+//     this.range,
+//     this._start,
+//     this._end,
+//     this._length,
+//   );
+
+//   Future<RangeParser?> parse(String header, File file) async {
+//     final match = RegExp(r'^bytes=(\d*)\-(\d*)$').firstMatch(range);
+//     if (match == null) return null;
+//     final startMatch = match[1] ?? '';
+//     final endMatch = match[2] ?? '';
+//     final length = await file.length();
+//     if (startMatch.isNotEmpty || endMatch.isNotEmpty) {
+//       int start;
+//       int end;
+//       if (startMatch.isEmpty) {
+//         start = length - int.parse(endMatch);
+//         if (start < 0) start = 0;
+//         end = length - 1;
+//       } else {
+//         start = int.parse(startMatch);
+//         end = endMatch.isEmpty ? length - 1 : int.parse(endMatch);
+//       }
+//       if (start <= end) {
+//         if (end >= length) {
+//           end = length - 1;
+//         }
+//         if (start >= length) {
+//           return null;
+//         }
+//       } else {
+//         return null;
+//       }
+//       return RangeParser._(
+//         header,
+//         start,
+//         end,
+//         length,
+//       );
+//     }
+//     return null;
+//   }
+
+//   Stream<List<int>> openRangeRead(File file) async* {
+//     yield* file.openRead(_start, _end);
+//   }
+
+//   Response openRangeResponse(File file, [Map<String, Object>? headers]) {
+//     print('object');
+//     return Response(
+//       206,
+//       body: file.openRead(_start, _end),
+//       headers: headers,
+//     );
+//   }
+// }
