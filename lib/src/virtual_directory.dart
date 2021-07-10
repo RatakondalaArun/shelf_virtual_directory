@@ -116,7 +116,9 @@ class ShelfVirtualDirectory {
 
   Future<Response> _handler(Request req) async {
     // todo: support head request
-    if (req.method != 'GET') return Response.notFound('Not Found');
+    if (!['GET', 'HEAD'].contains(req.method)) {
+      return Response.notFound('Not Found');
+    }
 
     final basePath = await _dir.resolveSymbolicLinks();
 
@@ -139,7 +141,11 @@ class ShelfVirtualDirectory {
       // if index file exists in that directory serve it
       if (await indexFile.exists()) {
         final headers = await _headersParser(indexFile);
-        return Response(200, body: indexFile.openRead(), headers: headers);
+        return Response(
+          200,
+          body: req.method == 'HEAD' ? null : indexFile.openRead(),
+          headers: headers,
+        );
       }
       return _handleDir(
         req,
@@ -192,7 +198,7 @@ class ShelfVirtualDirectory {
 
     return Response(
       200,
-      body: file.openRead(),
+      body: req.method == 'HEAD' ? null : file.openRead(),
       headers: await headerPraser(file),
     );
   }
