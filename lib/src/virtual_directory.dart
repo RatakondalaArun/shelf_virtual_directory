@@ -8,6 +8,7 @@ import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'package:http_parser/http_parser.dart' as hp;
 
 part 'html_templates.dart';
 
@@ -294,7 +295,7 @@ Future<Map<String, Object>> _defaultFileheaderPraser(File file) async {
   return {
     HttpHeaders.contentTypeHeader: fileType ?? 'application/octet-stream',
     HttpHeaders.contentLengthHeader: fileStat.size.toString(),
-    HttpHeaders.lastModifiedHeader: fileStat.modified.toString(),
+    HttpHeaders.lastModifiedHeader: hp.formatHttpDate(fileStat.modified),
   };
 }
 
