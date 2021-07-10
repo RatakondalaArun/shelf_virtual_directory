@@ -115,6 +115,7 @@ class ShelfVirtualDirectory {
   Cascade get cascade => Cascade().add(_handler);
 
   Future<Response> _handler(Request req) async {
+    // todo: support head request
     if (req.method != 'GET') return Response.notFound('Not Found');
 
     final basePath = await _dir.resolveSymbolicLinks();
@@ -171,6 +172,7 @@ class ShelfVirtualDirectory {
     File? file,
     FileHeaderParser headerPraser,
   ) async {
+    // todo: support range requests
     // serves default404file incase requested file does not exist
     if (file == null) {
       final notFoundFile = File(path.join(fsPath, default404File));
