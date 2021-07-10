@@ -30,7 +30,7 @@ void main() {
   group('Test API calls', () {
     late io.IOServer server;
 
-    setUp(() async {
+    setUpAll(() async {
       final virDir = ShelfVirtualDirectory(fsPath);
 
       final router = Router()
@@ -58,7 +58,7 @@ void main() {
         ..mount(pipline);
     });
 
-    tearDown(() => server.close());
+    tearDownAll(() => server.close());
 
     Uri url(String path) => Uri(
           scheme: server.url.scheme,
