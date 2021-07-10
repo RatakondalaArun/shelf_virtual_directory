@@ -13,7 +13,7 @@ void main() {
   // so we need to append current directory path
   //
   // "web" is the folder that we are trying to serve
-  final fsPath = p.join(Directory.current.path, 'test', 'web');
+  final fsPath = p.join(Directory.current.path, 'example', 'web');
 
   // final vWebDir = ShelfVirtualDirectory('fsPath');
   test('Throws "ArgumentError" when directory is not found', () {
