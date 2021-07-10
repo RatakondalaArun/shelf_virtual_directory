@@ -9,7 +9,6 @@ import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
 import 'package:test/test.dart';
 
 void main() {
-  // setUp(callback)
   // Tests uses different root directory
   // so we need to append current directory path
   //
@@ -65,28 +64,28 @@ void main() {
           fragment: server.url.fragment,
         );
 
-    test('..mount(\'/routerstatic/\') should return 200', () async {
+    test('GET ..mount(\'/routerstatic/\') should return 200', () async {
       final res = await http.get(url('/routerstatic/'));
       expect(res.statusCode, equals(200));
     });
 
-    test('..mount(\'/mountstatic/\') should return 200', () async {
+    test('GET ..mount(\'/mountstatic/\') should return 200', () async {
       final res = await http.get(url('/mountstatic/'));
       expect(res.statusCode, equals(200));
     });
 
-    test('..mount(\'/fsrootstatic/\') should return 200', () async {
+    test('GET ..mount(\'/fsrootstatic/\') should return 200', () async {
       final res = await http.get(url('/fsrootstatic/'));
       expect(res.statusCode, equals(200));
       // CI services might not have access to root folder so skipping it
     }, skip: true);
 
-    test('Calling ..get(\'/api/user\') should return 200', () async {
+    test('GET ..get(\'/api/user\') should return 200', () async {
       final res = await http.get(url('/api/user'));
       expect(res.statusCode, equals(200));
     });
 
-    test('Should redirect if there is no trailing slash "/"', () async {
+    test('GET Should redirect if there is no trailing slash "/"', () async {
       final req = http.Request('GET', url('/routerstatic/temp'))
         // ..maxRedirects = 1
         ..followRedirects = false;
