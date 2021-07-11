@@ -40,19 +40,27 @@ part 'html_templates.dart';
 /// });
 ///```
 class ShelfVirtualDirectory {
+  /// Absolute path to the directory
   final String folderPath;
+
+  /// Default file to serve. Must be inside [folderPath].
   final String defaultFile;
+
+  /// Default 404 file to serve. Must be inside [folderPath].
   final String default404File;
+
+  /// Weather to list directory or not.
+  final bool listDirectory;
+
   final FileHeaderParser _headersParser;
   final Directory _dir;
-  final bool listDirectory;
 
   /// Creates a instance of [ShelfVirtualDirectory]
   ///
   /// ## Parameters
   ///
-  /// - `folderPath`: Name of the directory you want to serve from the *current folder*
-  /// - `defaultFile`: File name that will be served. *Default: index.html*
+  /// - `folderPath`: Name of the directory you want to serve. *Must be a absolute path*.
+  /// - `defaultFile`: File name that will be serve. *Must be inside [folderPath]*
   /// - `default404File`: File name that will be served for 404. *Default: 404.html*
   /// - `listDirectory`: Lists files and directories from the [folderPath]
   /// - `headersParser`: Provide your own headers from the [File].
@@ -157,7 +165,15 @@ class ShelfVirtualDirectory {
 
     switch (fsPathType) {
       case FileSystemEntityType.link:
-      // todo: handle symboliclinks
+        // todo: handle symboliclinks
+        stdout
+          ..write('[ShelfVirtualDirectory] ')
+          ..write('Resolving symbolic link was not implemented ')
+          ..write('Raise a issue at ')
+          ..write('https://github.com/RatakondalaArun/')
+          ..write('shelf_virtual_directory/issues/new')
+          ..write('?title=Resolving%20Symbolic%20link%20failed\n');
+        return _handleFile(req, basePath, null, _headersParser);
       case FileSystemEntityType.directory:
         return _handleDir(
           req,
