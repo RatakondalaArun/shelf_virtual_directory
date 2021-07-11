@@ -4,9 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="generator" content="made with love by dartdoc 0.39.0">
+  <meta name="generator" content="made with love by dartdoc 0.42.0">
   <meta name="description" content="shelf_virtual_directory API docs, for the Dart programming language.">
   <title>shelf_virtual_directory - Dart API docs</title>
+
 
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -16,7 +17,9 @@
   <link rel="stylesheet" href="static-assets/styles.css">
   <link rel="icon" href="static-assets/favicon.png">
 
+  
 </head>
+
 
 <body data-base-href=""
       data-using-base-href="false">
@@ -36,27 +39,31 @@
 
 <main>
 
+
   <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
     <header id="header-search-sidebar" class="hidden-l">
-      <form class="search-sidebar" role="search">
-        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
-      </form>
-    </header>
-    
-    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-      <li class="self-crumb">shelf_virtual_directory package</li>
-    </ol>
-    
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li class="self-crumb">shelf_virtual_directory package</li>
+</ol>
+
+
     <h5 class="hidden-xs"><span class="package-name">shelf_virtual_directory</span> <span class="package-kind">package</span></h5>
     <ol>
-          <li class="section-title">Libraries</li>
-          <li><a href="shelf_virtual_directory/shelf_virtual_directory-library.html">shelf_virtual_directory</a></li>
-    </ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="shelf_virtual_directory/shelf_virtual_directory-library.html">shelf_virtual_directory</a></li>
+</ol>
+
   </div>
 
   <div id="dartdoc-main-content" class="main-content">
-      <section class="desc markdown">
-        <h1 id="virtual-directory-for-shelf">Virtual Directory for Shelf</h1>
+      
+<section class="desc markdown">
+  <h1 id="virtual-directory-for-shelf">Virtual Directory for Shelf</h1>
 <p><img src="https://img.shields.io/pub/v/shelf_virtual_directory" alt="Pub Version"></p>
 <p>This package provides <code>Handler</code>, <code>Router</code> and <code>Cascade</code> to serve static files from the <a href="https://pub.dev/packages/shelf"><em>dart shelf server</em></a> and can work with websockets.</p>
 <table><thead><tr><th>Provider</th><th>UseCase</th></tr></thead><tbody><tr><td><code>Handler</code></td><td>Can be used to serve as a handler for <code>Pipeline</code> or for <code>Cascade</code></td></tr><tr><td><code>Router</code></td><td>Can be used to mount as a subroute</td></tr><tr><td><code>Cascade</code></td><td>Can be used directly serve from shelf server</td></tr></tbody></table>
@@ -76,15 +83,16 @@
 <li>
 <p>Import</p>
 <pre class="language-dart"><code class="language-dart">import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
+import 'package:path/path.dart' as p;
 </code></pre>
 </li>
 <li>
-<p>Create a instance of <code>ShelfVirtualDirectory</code> with a directory <code>../web</code></p>
-<pre class="language-dart"><code class="language-dart">final virtualDir = ShelfVirtualDirectory(
-     '../web'
+<p>Create a instance of <code>ShelfVirtualDirectory</code> with a directory <code>web</code></p>
+<pre class="language-dart"><code class="language-dart">final fsPath = p.join(Directory.current.path,'example','web');// path to server
+final virtualDir = ShelfVirtualDirectory(
+     fsPath,
      defaultFile:'index.html',
      default404File:'404.html',
-     showLogs:true,
  );
 </code></pre>
 <p><strong>Note: <code>index.html</code> and <code>404.html</code> files must be directly under root folder. In above case under <code>web/</code> folder.</strong></p>
@@ -94,7 +102,7 @@
 <ul>
 <li>
 <p>Using as a <code>Handler</code></p>
-<pre class="language-dart"><code class="language-dart">  final virDirHandler = ShelfVirtualDirectory('../web').handler;
+<pre class="language-dart"><code class="language-dart">  final virDirHandler = ShelfVirtualDirectory(fsPath).handler;
 
   final staticFileHandler = const Pipeline()
       .addMiddleware(logRequests())
@@ -111,23 +119,18 @@
 <pre class="language-dart"><code class="language-dart">  //As a subroute
   final router = Router()
   ..get('/otherroute',otherRoutehandler)
-  ..mount('/',ShelfVirtualDirectory('../web').router); // localhost:8080/
+  ..mount('/',ShelfVirtualDirectory(fsPath).router); // localhost:8080/
   //or
 
   final router = Router()
   ..get('/otherroute',otherRouteHandler)
-  ..mount('/home/',ShelfVirtualDirectory('../web').router);//localhost:8080/home/
-  //or
-
-  final router = Router()
-  ..get('/otherroute',otherRouteHandler)
-  ..get('/',ShelfVirtualDirectory('../web').handler)//at end
+  ..mount('/home/',ShelfVirtualDirectory(fsPath).router);//localhost:8080/home/
 </code></pre>
 <p><strong>Note: If your are planning to use it under home directory('/'), always mount or handle the <code>ShelfVirtualDirectory</code> at the end.</strong></p>
 <p>Example</p>
 <pre class="language-dart"><code class="language-dart">  final mainRoute = Router()
   ..get('/rest',(_)=&gt;Respond.ok('Other routes'))
-  ..mount('/',ShelfVirtualDirectory('../web').router);
+  ..mount('/',ShelfVirtualDirectory(fsPath).router);
 </code></pre>
 </li>
 <li>
@@ -135,7 +138,7 @@
 <pre class="language-dart"><code class="language-dart">  import 'package:shelf/shelf_io.dart' as io show serve;
 
   // You can add other handlers to this cascade
-  final virDirCascade = ShelfVirtualDirectory('web').cascade;
+  final virDirCascade = ShelfVirtualDirectory(fsPath).cascade;
   io.serve(virDirCascade.add(someOtherHandler),'localhost',8080)
   .then((server){
     print('Server is sunning at ${server.address}:${server.port}'),
@@ -143,37 +146,31 @@
 </code></pre>
 </li>
 </ul>
-<h2 id="how-it-works">How it works?</h2>
-<p>It adds all the files under the given root directory as a route to a <code>Router</code> instance.</p>
-<p>Example</p>
-<pre class="language-text"><code class="language-text">web/
-    - index.html
-    - 404.html
-    - js/
-        - index.js
-    - style/
-        - index.css
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li>
+<p>Only <code>mount</code> method supports for the router.</p>
+<pre class="language-dart"><code class="language-dart">  final router = Router()
+      ..mount('/home/',virDir.handler)
+      ..get('/api',apiHandler);
 </code></pre>
-<p>All this will turn in to.</p>
-<pre class="language-text"><code class="language-text">GET     /index.html
-GET     /404.html
-GET     /js/index.js
-GET     /style/index.css
-</code></pre>
-<p>If user try to access other routes it will serve <code>404.html</code>.</p>
+</li>
+</ul>
 <h2 id="contrubitions">Contrubitions</h2>
 <p><strong>All contrubitions are welcomed.</strong></p>
-      </section>
-      
+</section>
+
+
       <section class="summary">
           <h2>Libraries</h2>
         <dl>
           <dt id="shelf_virtual_directory">
-            <span class="name"><a href="shelf_virtual_directory/shelf_virtual_directory-library.html">shelf_virtual_directory</a></span>           
-          </dt>
-          <dd>
-             
-          </dd>
+  <span class="name"><a href="shelf_virtual_directory/shelf_virtual_directory-library.html">shelf_virtual_directory</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
         </dl>
       </section>
 
@@ -187,17 +184,19 @@ GET     /style/index.css
 <footer>
   <span class="no-break">
     shelf_virtual_directory
-      2.0.0
+      3.0.0
   </span>
 
+  
 </footer>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="static-assets/typeahead.bundle.min.js"></script>
+
 <script src="static-assets/highlight.pack.js"></script>
 <script src="static-assets/script.js"></script>
+
 
 
 </body>
 
 </html>
+

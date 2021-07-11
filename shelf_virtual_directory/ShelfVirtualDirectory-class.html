@@ -7,6 +7,7 @@
   <meta name="description" content="API docs for the ShelfVirtualDirectory class from the shelf_virtual_directory library, for the Dart programming language.">
   <title>ShelfVirtualDirectory class - shelf_virtual_directory library - Dart API</title>
 
+
   
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
@@ -15,7 +16,9 @@
   <link rel="stylesheet" href="../static-assets/styles.css">
   <link rel="icon" href="../static-assets/favicon.png">
 
+  
 </head>
+
 
 <body data-base-href="../"
       data-using-base-href="false">
@@ -37,19 +40,21 @@
 
 <main>
 
+
   <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
     <header id="header-search-sidebar" class="hidden-l">
-      <form class="search-sidebar" role="search">
-        <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
-      </form>
-    </header>
-    
-    <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
-      <li><a href="../index.html">shelf_virtual_directory</a></li>
-      <li><a href="../shelf_virtual_directory/shelf_virtual_directory-library.html">shelf_virtual_directory</a></li>
-      <li class="self-crumb">ShelfVirtualDirectory class</li>
-    </ol>
-    
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">shelf_virtual_directory</a></li>
+  <li><a href="../shelf_virtual_directory/shelf_virtual_directory-library.html">shelf_virtual_directory</a></li>
+  <li class="self-crumb">ShelfVirtualDirectory class</li>
+</ol>
+
+
     <h5>shelf_virtual_directory library</h5>
     <ol>
   <li class="section-title"><a href="../shelf_virtual_directory/shelf_virtual_directory-library.html#classes">Classes</a></li>
@@ -61,23 +66,62 @@
 
 
 
+  <li class="section-title"><a href="../shelf_virtual_directory/shelf_virtual_directory-library.html#typedefs">Typedefs</a></li>
+  <li><a href="../shelf_virtual_directory/FileHeaderParser.html">FileHeaderParser</a></li>
 
 </ol>
 
   </div>
 
   <div id="dartdoc-main-content" class="main-content">
-      <div><h1><span class="kind-class">ShelfVirtualDirectory</span> class     <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
- </h1></div>
+      <div>
+<h1><span class="kind-class">ShelfVirtualDirectory</span> class 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
 
     
+<section class="desc markdown">
+  <p>Creates a instance of <a href="../shelf_virtual_directory/ShelfVirtualDirectory-class.html">ShelfVirtualDirectory</a></p>
+<h2 id="parameters">Parameters</h2>
+<ul>
+<li>
+<p><code>folderPath</code>: Name of the directory you want to serve from the <em>current folder</em></p>
+</li>
+<li>
+<p><code>defaultFile</code>: File name that will be served. <em>Default: index.html</em></p>
+</li>
+<li>
+<p><code>default404File</code>: File name that will be served for 404. <em>Default: 404.html</em></p>
+</li>
+<li>
+<p><code>showLogs</code>: Shows logs from the ShelfVirtualDirectory. <em>Default: true</em></p>
+</li>
+</ul>
+<h2 id="examples">Examples</h2>
+<p>You can get router or handler or cascade from <a href="../shelf_virtual_directory/ShelfVirtualDirectory-class.html">ShelfVirtualDirectory</a>
+instance</p>
+<pre class="language-dart"><code class="language-dart">
+final virDirRouter = ShelfVirtualDirectory(folderToServe);
+
+final staticFileHandler = const Pipeline()
+    .addMiddleware(logRequests())
+    .addHandler(virDirRouter.handler);
+
+io.serve(Cascade().add(staticFileHandler).handler,address,port).then((server){
+    print('Server is sunning at ${server.address}:${server.port}'),
+});
+</code></pre>
+</section>
+
+
 
     <section class="summary offset-anchor" id="constructors">
       <h2>Constructors</h2>
 
       <dl class="constructor-summary-list">
         <dt id="ShelfVirtualDirectory" class="callable">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/ShelfVirtualDirectory.html">ShelfVirtualDirectory</a></span><span class="signature">(<span class="parameter" id="-param-folderPath"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">folderPath</span>, </span><span class="parameter" id="-param-defaultFile">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">defaultFile</span> = <span class="default-value">&#39;index.html&#39;</span>, </span><span class="parameter" id="-param-default404File"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">default404File</span> = <span class="default-value">&#39;404.html&#39;</span>, </span><span class="parameter" id="-param-showLogs"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.12.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">showLogs</span> = <span class="default-value">true</span>}</span>)</span>
+          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/ShelfVirtualDirectory.html">ShelfVirtualDirectory</a></span><span class="signature">(<span class="parameter" id="-param-folderPath"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">folderPath</span>, </span><span class="parameter" id="-param-defaultFile">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">defaultFile</span> = <span class="default-value">&#39;index.html&#39;</span>, </span><span class="parameter" id="-param-default404File"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span> <span class="parameter-name">default404File</span> = <span class="default-value">&#39;404.html&#39;</span>, </span><span class="parameter" id="-param-listDirectory"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.13.4/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">listDirectory</span> = <span class="default-value">true</span>, </span><span class="parameter" id="-param-headersParser"><span class="type-annotation"><a href="../shelf_virtual_directory/FileHeaderParser.html">FileHeaderParser</a></span> <span class="parameter-name">headersParser</span> = <span class="default-value">_defaultFileheaderParser</span>}</span>)</span>
         </dt>
         <dd>
           Creates a instance of <a href="../shelf_virtual_directory/ShelfVirtualDirectory-class.html">ShelfVirtualDirectory</a> <a href="../shelf_virtual_directory/ShelfVirtualDirectory/ShelfVirtualDirectory.html">[...]</a>
@@ -90,77 +134,104 @@
 
       <dl class="properties">
         <dt id="cascade" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/cascade.html">cascade</a></span>
-          <span class="signature">&#8594; <a href="https://pub.dev/documentation/shelf/1.1.1/shelf/Cascade-class.html">Cascade</a></span>         
-        </dt>
-        <dd>
-          Returns a instance of <a href="https://pub.dev/documentation/shelf/1.1.1/shelf/Cascade-class.html">Cascade</a> <a href="../shelf_virtual_directory/ShelfVirtualDirectory/cascade.html">[...]</a>
-                  <div class="features">read-only</div>
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/cascade.html">cascade</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/shelf/1.1.4/shelf/Cascade-class.html">Cascade</a></span> 
+
+</dt>
+<dd>
+  Returns a instance of <a href="https://pub.dev/documentation/shelf/1.1.4/shelf/Cascade-class.html">Cascade</a> <a href="../shelf_virtual_directory/ShelfVirtualDirectory/cascade.html">[...]</a>
+  <div class="features">read-only</div>
+
 </dd>
+
         <dt id="default404File" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/default404File.html">default404File</a></span>
-          <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span>         
-        </dt>
-        <dd>
-           
-                  <div class="features">final</div>
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/default404File.html">default404File</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span> 
+
+</dt>
+<dd>
+  Default 404 file to serve. Must be inside <a href="../shelf_virtual_directory/ShelfVirtualDirectory/folderPath.html">folderPath</a>. 
+  <div class="features">final</div>
+
 </dd>
+
         <dt id="defaultFile" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/defaultFile.html">defaultFile</a></span>
-          <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span>         
-        </dt>
-        <dd>
-           
-                  <div class="features">final</div>
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/defaultFile.html">defaultFile</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span> 
+
+</dt>
+<dd>
+  Default file to serve. Must be inside <a href="../shelf_virtual_directory/ShelfVirtualDirectory/folderPath.html">folderPath</a>. 
+  <div class="features">final</div>
+
 </dd>
+
         <dt id="folderPath" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/folderPath.html">folderPath</a></span>
-          <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span>         
-        </dt>
-        <dd>
-           
-                  <div class="features">final</div>
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/folderPath.html">folderPath</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span> 
+
+</dt>
+<dd>
+  Absolute path to the directory 
+  <div class="features">final</div>
+
 </dd>
+
         <dt id="handler" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/handler.html">handler</a></span>
-          <span class="signature">&#8594; <a href="https://pub.dev/documentation/shelf/1.1.1/shelf/Handler.html">Handler</a></span>         
-        </dt>
-        <dd>
-          Creates a instance of <a href="https://pub.dev/documentation/shelf/1.1.1/shelf/Handler.html">Handler</a> 
-                  <div class="features">read-only</div>
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/handler.html">handler</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/shelf/1.1.4/shelf/Handler.html">Handler</a></span> 
+
+</dt>
+<dd>
+  Creates a instance of <a href="https://pub.dev/documentation/shelf/1.1.4/shelf/Handler.html">Handler</a> 
+  <div class="features">read-only</div>
+
 </dd>
+
         <dt id="hashCode" class="property inherited">
-          <span class="name"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/hashCode.html">hashCode</a></span>
-          <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/int-class.html">int</a></span>         
-        </dt>
-        <dd class="inherited">
-          The hash code for this object. <a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/hashCode.html">[...]</a>
-                  <div class="features">read-only, inherited</div>
+  <span class="name"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/int-class.html">int</a></span> 
+
+</dt>
+<dd class="inherited">
+  The hash code for this object. <a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/hashCode.html">[...]</a>
+  <div class="features">read-only, inherited</div>
+
 </dd>
+
+        <dt id="listDirectory" class="property">
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/listDirectory.html">listDirectory</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/bool-class.html">bool</a></span> 
+
+</dt>
+<dd>
+  Weather to list directory or not. 
+  <div class="features">final</div>
+
+</dd>
+
         <dt id="router" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/router.html">router</a></span>
-          <span class="signature">&#8594; <a href="https://pub.dev/documentation/shelf_router/1.0.0/shelf_router/Router-class.html">Router</a></span>         
-        </dt>
-        <dd>
-          Returns a instance of <a href="https://pub.dev/documentation/shelf_router/1.0.0/shelf_router/Router-class.html">Router</a> <a href="../shelf_virtual_directory/ShelfVirtualDirectory/router.html">[...]</a>
-                  <div class="features">read-only</div>
+  <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/router.html">router</a></span>
+  <span class="signature">&#8594; <a href="https://pub.dev/documentation/shelf_router/1.1.0/shelf_router/Router-class.html">Router</a></span> 
+
+</dt>
+<dd>
+  Returns a instance of <a href="https://pub.dev/documentation/shelf_router/1.1.0/shelf_router/Router-class.html">Router</a> <a href="../shelf_virtual_directory/ShelfVirtualDirectory/router.html">[...]</a>
+  <div class="features">read-only</div>
+
 </dd>
+
         <dt id="runtimeType" class="property inherited">
-          <span class="name"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/runtimeType.html">runtimeType</a></span>
-          <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/Type-class.html">Type</a></span>         
-        </dt>
-        <dd class="inherited">
-          A representation of the runtime type of the object. 
-                  <div class="features">read-only, inherited</div>
+  <span class="name"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/Type-class.html">Type</a></span> 
+
+</dt>
+<dd class="inherited">
+  A representation of the runtime type of the object. 
+  <div class="features">read-only, inherited</div>
+
 </dd>
-        <dt id="showLogs" class="property">
-          <span class="name"><a href="../shelf_virtual_directory/ShelfVirtualDirectory/showLogs.html">showLogs</a></span>
-          <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/bool-class.html">bool</a></span>         
-        </dt>
-        <dd>
-           
-                  <div class="features">final</div>
-</dd>
+
       </dl>
     </section>
 
@@ -168,23 +239,31 @@
       <h2>Methods</h2>
       <dl class="callables">
         <dt id="noSuchMethod" class="callable inherited">
-          <span class="name"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
-            <span class="returntype parameter">&#8594; dynamic</span>
-          </span>
-                  </dt>
-        <dd class="inherited">
-          Invoked when a non-existent method or property is accessed. <a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/noSuchMethod.html">[...]</a>
-                  <div class="features">inherited</div>
+  <span class="name"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+    <span class="returntype parameter">&#8594; dynamic</span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  Invoked when a non-existent method or property is accessed. <a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/noSuchMethod.html">[...]</a>
+  <div class="features">inherited</div>
+
 </dd>
+
         <dt id="toString" class="callable inherited">
-          <span class="name"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
-            <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/String-class.html">String</a></span>
-          </span>
-                  </dt>
-        <dd class="inherited">
-          A string representation of this object. <a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/toString.html">[...]</a>
-                  <div class="features">inherited</div>
+  <span class="name"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/String-class.html">String</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  A string representation of this object. <a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/toString.html">[...]</a>
+  <div class="features">inherited</div>
+
 </dd>
+
       </dl>
     </section>
 
@@ -192,14 +271,18 @@
       <h2>Operators</h2>
       <dl class="callables">
         <dt id="operator ==" class="callable inherited">
-          <span class="name"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
-            <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.12.4/dart-core/bool-class.html">bool</a></span>
-          </span>
-                  </dt>
-        <dd class="inherited">
-          The equality operator. <a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/operator_equals.html">[...]</a>
-                  <div class="features">inherited</div>
+  <span class="name"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.13.4/dart-core/bool-class.html">bool</a></span>
+  </span>
+  
+
+</dt>
+<dd class="inherited">
+  The equality operator. <a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/operator_equals.html">[...]</a>
+  <div class="features">inherited</div>
+
 </dd>
+
       </dl>
     </section>
 
@@ -223,17 +306,17 @@
     <li><a href="../shelf_virtual_directory/ShelfVirtualDirectory/defaultFile.html">defaultFile</a></li>
     <li><a href="../shelf_virtual_directory/ShelfVirtualDirectory/folderPath.html">folderPath</a></li>
     <li><a href="../shelf_virtual_directory/ShelfVirtualDirectory/handler.html">handler</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li><a href="../shelf_virtual_directory/ShelfVirtualDirectory/listDirectory.html">listDirectory</a></li>
     <li><a href="../shelf_virtual_directory/ShelfVirtualDirectory/router.html">router</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/runtimeType.html">runtimeType</a></li>
-    <li><a href="../shelf_virtual_directory/ShelfVirtualDirectory/showLogs.html">showLogs</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/runtimeType.html">runtimeType</a></li>
 
     <li class="section-title"><a href="../shelf_virtual_directory/ShelfVirtualDirectory-class.html#instance-methods">Methods</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/toString.html">toString</a></li>
 
     <li class="section-title inherited"><a href="../shelf_virtual_directory/ShelfVirtualDirectory-class.html#operators">Operators</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.12.4/dart-core/Object/operator_equals.html">operator ==</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/operator_equals.html">operator ==</a></li>
 
 
 
@@ -247,17 +330,19 @@
 <footer>
   <span class="no-break">
     shelf_virtual_directory
-      2.0.0
+      3.0.0
   </span>
 
+  
 </footer>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="../static-assets/typeahead.bundle.min.js"></script>
+
 <script src="../static-assets/highlight.pack.js"></script>
 <script src="../static-assets/script.js"></script>
+
 
 
 </body>
 
 </html>
+
