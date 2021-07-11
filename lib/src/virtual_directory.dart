@@ -78,7 +78,7 @@ class ShelfVirtualDirectory {
     this.defaultFile = 'index.html',
     this.default404File = '404.html',
     this.listDirectory = true,
-    FileHeaderParser headersParser = _defaultFileheaderPraser,
+    FileHeaderParser headersParser = _defaultFileheaderParser,
   })  : _dir = Directory(folderPath),
         _headersParser = headersParser {
     if (!_dir.existsSync()) {
@@ -176,7 +176,7 @@ class ShelfVirtualDirectory {
     Request req,
     String fsPath,
     File? file,
-    FileHeaderParser headerPraser,
+    FileHeaderParser headerParser,
   ) async {
     // serves default404file incase requested file does not exist
     if (file == null) {
@@ -196,7 +196,7 @@ class ShelfVirtualDirectory {
     if (fileStat.modeString()[0] != 'r') return Response.forbidden('Forbidden');
     final length = fileStat.size;
     final range = req.headers[HttpHeaders.rangeHeader];
-    final headers = await headerPraser(file) ?? {};
+    final headers = await headerParser(file) ?? {};
 
     if (range != null) {
       final matches = RegExp(r'^bytes=(\d*)\-(\d*)$').firstMatch(range);
@@ -257,7 +257,7 @@ class ShelfVirtualDirectory {
     Request req,
     String fsPath,
     Directory dir,
-    FileHeaderParser headerPraser,
+    FileHeaderParser headerParser,
   ) async {
     final requestedPath = req.url.path;
     if (!listDirectory) return Response.notFound('Not Found');
@@ -332,7 +332,7 @@ class ShelfVirtualDirectory {
 // Parse header and return headers for the file
 typedef FileHeaderParser = FutureOr<Map<String, Object>?> Function(File file);
 
-Future<Map<String, Object>> _defaultFileheaderPraser(File file) async {
+Future<Map<String, Object>> _defaultFileheaderParser(File file) async {
   final fileType = mime.lookupMimeType(file.path);
 
   // collect file data
