@@ -78,7 +78,7 @@ class ShelfVirtualDirectory {
     this.defaultFile = 'index.html',
     this.default404File = '404.html',
     this.listDirectory = true,
-    FileHeaderParser headersParser = _defaultFileheaderPraser,
+    FileHeaderParser headersParser = _defaultFileheaderParser,
   })  : _dir = Directory(folderPath),
         _headersParser = headersParser {
     if (!_dir.existsSync()) {
@@ -176,7 +176,7 @@ class ShelfVirtualDirectory {
     Request req,
     String fsPath,
     File? file,
-    FileHeaderParser headerPraser,
+    FileHeaderParser headerParser,
   ) async {
     // serves default404file incase requested file does not exist
     if (file == null) {
@@ -196,7 +196,7 @@ class ShelfVirtualDirectory {
     if (fileStat.modeString()[0] != 'r') return Response.forbidden('Forbidden');
     final length = fileStat.size;
     final range = req.headers[HttpHeaders.rangeHeader];
-    final headers = await headerPraser(file) ?? {};
+    final headers = await headerParser(file) ?? {};
 
     if (range != null) {
       final matches = RegExp(r'^bytes=(\d*)\-(\d*)$').firstMatch(range);
@@ -257,7 +257,7 @@ class ShelfVirtualDirectory {
     Request req,
     String fsPath,
     Directory dir,
-    FileHeaderParser headerPraser,
+    FileHeaderParser headerParser,
   ) async {
     final requestedPath = req.url.path;
     if (!listDirectory) return Response.notFound('Not Found');
@@ -332,7 +332,7 @@ class ShelfVirtualDirectory {
 // Parse header and return headers for the file
 typedef FileHeaderParser = FutureOr<Map<String, Object>?> Function(File file);
 
-Future<Map<String, Object>> _defaultFileheaderPraser(File file) async {
+Future<Map<String, Object>> _defaultFileheaderParser(File file) async {
   final fileType = mime.lookupMimeType(file.path);
 
   // collect file data
@@ -362,75 +362,3 @@ String _tr(String name, String requestedPath, FileStat stat) {
   </tr>
 ''';
 }
-
-// class RangeParser {
-//   final String range;
-
-//   final int _length;
-//   final int? _start;
-//   final int? _end;
-
-//   int? get start => _start;
-//   int? get end => _end;
-
-//   String get contentLength => (_end - _start + 1).toString();
-
-//   String get contentRange => 'bytes $_start-$_end/$_length';
-
-//   RangeParser._(
-//     this.range,
-//     this._start,
-//     this._end,
-//     this._length,
-//   );
-
-//   Future<RangeParser?> parse(String header, File file) async {
-//     final match = RegExp(r'^bytes=(\d*)\-(\d*)$').firstMatch(range);
-//     if (match == null) return null;
-//     final startMatch = match[1] ?? '';
-//     final endMatch = match[2] ?? '';
-//     final length = await file.length();
-//     if (startMatch.isNotEmpty || endMatch.isNotEmpty) {
-//       int start;
-//       int end;
-//       if (startMatch.isEmpty) {
-//         start = length - int.parse(endMatch);
-//         if (start < 0) start = 0;
-//         end = length - 1;
-//       } else {
-//         start = int.parse(startMatch);
-//         end = endMatch.isEmpty ? length - 1 : int.parse(endMatch);
-//       }
-//       if (start <= end) {
-//         if (end >= length) {
-//           end = length - 1;
-//         }
-//         if (start >= length) {
-//           return null;
-//         }
-//       } else {
-//         return null;
-//       }
-//       return RangeParser._(
-//         header,
-//         start,
-//         end,
-//         length,
-//       );
-//     }
-//     return null;
-//   }
-
-//   Stream<List<int>> openRangeRead(File file) async* {
-//     yield* file.openRead(_start, _end);
-//   }
-
-//   Response openRangeResponse(File file, [Map<String, Object>? headers]) {
-//     print('object');
-//     return Response(
-//       206,
-//       body: file.openRead(_start, _end),
-//       headers: headers,
-//     );
-//   }
-// }
