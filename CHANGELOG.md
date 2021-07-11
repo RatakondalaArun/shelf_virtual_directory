@@ -1,5 +1,22 @@
 # Change Log
 
+## 3.0.0
+
+Complete rewrite of this package.
+
+### Major changes
+
+- Removed [`showLogs`](https://github.com/RatakondalaArun/shelf_virtual_directory/blob/v2.0.0/lib/src/virtual_directory.dart#L78) argument.
+- Now `folderPath` takes a [absolute path](https://www.hackterms.com/absolute%20path).
+
+### Minor changes
+
+- Upgrade dependencies
+- Added support for range requests [#19](https://github.com/RatakondalaArun/shelf_virtual_directory/pull/19).
+- Issues Fixed
+  - New files does not get served untill application restart [#15](https://github.com/RatakondalaArun/shelf_virtual_directory/issues/15)
+  - rootFolderName get failed [#16](https://github.com/RatakondalaArun/shelf_virtual_directory/issues/16)
+
 ## 2.0.0
 
 - nullsafety to stable

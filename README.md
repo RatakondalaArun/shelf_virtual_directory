@@ -29,16 +29,17 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
 
    ```dart
    import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
+   import 'package:path/path.dart' as p;
    ```
 
-4) Create a instance of `ShelfVirtualDirectory` with a directory `../web`
+4) Create a instance of `ShelfVirtualDirectory` with a directory `web`
 
    ```dart
+   final fsPath = p.join(Directory.current.path,'example','web');// path to server
    final virtualDir = ShelfVirtualDirectory(
-        '../web'
+        fsPath,
         defaultFile:'index.html',
         default404File:'404.html',
-        showLogs:true,
     );
    ```
 
@@ -49,7 +50,7 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
 - Using as a `Handler`
 
     ```dart
-    final virDirHandler = ShelfVirtualDirectory('../web').handler;
+    final virDirHandler = ShelfVirtualDirectory(fsPath).handler;
 
     final staticFileHandler = const Pipeline()
         .addMiddleware(logRequests())
@@ -67,17 +68,12 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     //As a subroute
     final router = Router()
     ..get('/otherroute',otherRoutehandler)
-    ..mount('/',ShelfVirtualDirectory('../web').router); // localhost:8080/
+    ..mount('/',ShelfVirtualDirectory(fsPath).router); // localhost:8080/
     //or
 
     final router = Router()
     ..get('/otherroute',otherRouteHandler)
-    ..mount('/home/',ShelfVirtualDirectory('../web').router);//localhost:8080/home/
-    //or
-
-    final router = Router()
-    ..get('/otherroute',otherRouteHandler)
-    ..get('/',ShelfVirtualDirectory('../web').handler)//at end
+    ..mount('/home/',ShelfVirtualDirectory(fsPath).router);//localhost:8080/home/
     ```
 
     **Note: If your are planning to use it under home directory('/'), always mount or handle the `ShelfVirtualDirectory` at the end.**
@@ -87,7 +83,7 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     ```dart
     final mainRoute = Router()
     ..get('/rest',(_)=>Respond.ok('Other routes'))
-    ..mount('/',ShelfVirtualDirectory('../web').router);
+    ..mount('/',ShelfVirtualDirectory(fsPath).router);
     ```
 
 - Using as a `Cascade`
@@ -96,39 +92,22 @@ This package provides `Handler`, `Router` and `Cascade` to serve static files fr
     import 'package:shelf/shelf_io.dart' as io show serve;
 
     // You can add other handlers to this cascade
-    final virDirCascade = ShelfVirtualDirectory('web').cascade;
+    final virDirCascade = ShelfVirtualDirectory(fsPath).cascade;
     io.serve(virDirCascade.add(someOtherHandler),'localhost',8080)
     .then((server){
       print('Server is sunning at ${server.address}:${server.port}'),
     })
     ```
 
-## How it works?
+## Limitations
 
-It adds all the files under the given root directory as a route to a `Router` instance.
+- Only `mount` method supports for the router.
 
-Example
-
-```text
-web/
-    - index.html
-    - 404.html
-    - js/
-        - index.js
-    - style/
-        - index.css
-```
-
-All this will turn in to.
-
-```text
-GET     /index.html
-GET     /404.html
-GET     /js/index.js
-GET     /style/index.css
-```
-
- If user try to access other routes it will serve `404.html`.
+    ```dart
+    final router = Router()
+        ..mount('/home/',virDir.handler)
+        ..get('/api',apiHandler);
+    ```
 
 ## Contrubitions
 
