@@ -4,11 +4,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http_parser/http_parser.dart' as hp;
 import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
-import 'package:http_parser/http_parser.dart' as hp;
 
 part 'html_templates.dart';
 
@@ -337,7 +337,9 @@ class ShelfVirtualDirectory {
         headers: {HttpHeaders.contentTypeHeader: 'text/html'},
       );
     } on FileSystemException catch (err) {
-      stderr..writeln(err)..writeln(StackTrace.current);
+      stderr
+        ..writeln(err)
+        ..writeln(StackTrace.current);
       return Response.forbidden('Forbidden');
     } catch (e) {
       rethrow;
