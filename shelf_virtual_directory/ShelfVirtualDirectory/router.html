@@ -12,9 +12,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="../../static-assets/github.css">
-  <link rel="stylesheet" href="../../static-assets/styles.css">
-  <link rel="icon" href="../../static-assets/favicon.png">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
 
   
 </head>
@@ -41,6 +42,44 @@
 
 <main>
 
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-property">router</span> property 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+</h1></div>
+
+
+        
+<section id="getter">
+
+<section class="multi-line-signature">
+  <span class="returntype"><a href="https://pub.dev/documentation/shelf_router/1.1.2/shelf_router/Router-class.html">Router</a></span>
+  <span class="name ">router</span>
+  
+
+</section>
+
+
+<section class="desc markdown">
+  <p>Returns a instance of <a href="https://pub.dev/documentation/shelf_router/1.1.2/shelf_router/Router-class.html">Router</a></p>
+<p>Can be used to mount as a subroute</p>
+<pre class="language-dart"><code>final router = Router('/',ShelfVirtualDirectory('web').router);// localhost:8080/
+//or
+final router = Router('/home/',ShelfVirtualDirectory('web').router);//localhost:8080/home/
+</code></pre>
+</section>
+
+
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Router get router =&gt; Router(notFoundHandler: _handler);</code></pre>
+</section>
+
+</section>
+
+
+  </div> <!-- /.main-content -->
 
   <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
     <header id="header-search-sidebar" class="hidden-l">
@@ -72,17 +111,17 @@
     <li><a href="../../shelf_virtual_directory/ShelfVirtualDirectory/defaultFile.html">defaultFile</a></li>
     <li><a href="../../shelf_virtual_directory/ShelfVirtualDirectory/folderPath.html">folderPath</a></li>
     <li><a href="../../shelf_virtual_directory/ShelfVirtualDirectory/handler.html">handler</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.16.1/dart-core/Object/hashCode.html">hashCode</a></li>
     <li><a href="../../shelf_virtual_directory/ShelfVirtualDirectory/listDirectory.html">listDirectory</a></li>
     <li><a href="../../shelf_virtual_directory/ShelfVirtualDirectory/router.html">router</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.16.1/dart-core/Object/runtimeType.html">runtimeType</a></li>
 
     <li class="section-title"><a href="../../shelf_virtual_directory/ShelfVirtualDirectory-class.html#instance-methods">Methods</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.16.1/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.16.1/dart-core/Object/toString.html">toString</a></li>
 
     <li class="section-title inherited"><a href="../../shelf_virtual_directory/ShelfVirtualDirectory-class.html#operators">Operators</a></li>
-    <li class="inherited"><a href="https://api.dart.dev/stable/2.13.4/dart-core/Object/operator_equals.html">operator ==</a></li>
+    <li class="inherited"><a href="https://api.dart.dev/stable/2.16.1/dart-core/Object/operator_equals.html">operator ==</a></li>
 
 
 
@@ -90,44 +129,6 @@
 </ol>
 
   </div><!--/.sidebar-offcanvas-->
-
-  <div id="dartdoc-main-content" class="main-content">
-      <div>
-<h1><span class="kind-property">router</span> property 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
-</h1></div>
-
-
-        
-<section id="getter">
-
-<section class="multi-line-signature">
-  <span class="returntype"><a href="https://pub.dev/documentation/shelf_router/1.1.0/shelf_router/Router-class.html">Router</a></span>
-  <span class="name ">router</span>
-  
-
-</section>
-
-
-<section class="desc markdown">
-  <p>Returns a instance of <a href="https://pub.dev/documentation/shelf_router/1.1.0/shelf_router/Router-class.html">Router</a></p>
-<p>Can be used to mount as a subroute</p>
-<pre class="language-dart"><code>final router = Router('/',ShelfVirtualDirectory('web').router);// localhost:8080/
-//or
-final router = Router('/home/',ShelfVirtualDirectory('web').router);//localhost:8080/home/
-</code></pre>
-</section>
-
-
-<section class="summary source-code" id="source">
-  <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">Router get router =&gt; Router(notFoundHandler: _handler);</code></pre>
-</section>
-
-</section>
-
-
-  </div> <!-- /.main-content -->
 
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
   </div><!--/.sidebar-offcanvas-->
@@ -137,15 +138,16 @@ final router = Router('/home/',ShelfVirtualDirectory('web').router);//localhost:
 <footer>
   <span class="no-break">
     shelf_virtual_directory
-      3.0.0
+      3.0.1
   </span>
 
   
 </footer>
 
 
-<script src="../../static-assets/highlight.pack.js"></script>
-<script src="../../static-assets/script.js"></script>
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/script.js?v1"></script>
 
 
 
