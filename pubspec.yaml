@@ -1,5 +1,5 @@
 name: shelf_virtual_directory
-version: 3.0.0
+version: 3.0.1
 description: >-
   This package provides a virtual directory to serve static files from a shelf
   server.
