@@ -1,5 +1,7 @@
 # Change Log
 
+## 3.0.1
+
 - Upgraded dependencies
 - Fixed linter warnings
 
