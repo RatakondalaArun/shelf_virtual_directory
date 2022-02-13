@@ -1,5 +1,8 @@
 # Change Log
 
+- Upgraded dependencies
+- Fixed linter warnings
+
 ## 3.0.0
 
 Complete rewrite of this package.
